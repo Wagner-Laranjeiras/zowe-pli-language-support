@@ -112,8 +112,8 @@ describe("CompilerOptions translator", () => {
     // Margins requires two or three arguments
     const options = parseAbstractCompilerOptions("MARGINS(4)");
     const translated = translateCompilerOptions(options).options;
-    // If the parsing fails, the option is not set
-    expect(translated.margins).toBeUndefined();
+    // If the parsing fails, the option is set to its default values
+    expect(translated.margins).toEqual({ m: 2, n: 72 });
   });
 
   test("Translates MARGINS with c", () => {
@@ -333,7 +333,7 @@ describe("CompilerOptions translator", () => {
     const issues = translateCompilerOptions(options).issues;
     expect(issues).toHaveLength(1);
     expect(issues[0].message).toBe(
-      "Expected at least 1 arguments, but received 0.",
+      "Expected at least 1 argument, but received 0.",
     );
   });
 
