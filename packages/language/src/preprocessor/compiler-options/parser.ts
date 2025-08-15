@@ -261,9 +261,10 @@ export function parseAbstractCompilerOptions(
   input: string,
   offset?: number,
 ): AbstractCompilerOptions {
-  const lexerResult = lexer.tokenize(
-    " ".repeat(offset ?? 0) + input.replace(/;$/, ""),
-  );
+  // Remove everything after the first ;.
+  // *PROCESS MARGINS(2, 72) ; MARGINS(1, 72); is valid, but everything after the first ; is ignored.
+  const validInput = input.split(";")[0];
+  const lexerResult = lexer.tokenize(" ".repeat(offset ?? 0) + validInput);
   const tokens = lexerResult.tokens as Token[];
   parser.input = tokens;
   const compilerOptions = parser.compilerOptions();
