@@ -24,6 +24,7 @@ import {
   ProcessGroup,
   ProgramConfig,
 } from "../workspace/plugin-configuration-provider";
+import { IBM2409I_invalid_return_with_returns_att } from "./messages/error-severity/IBM2409I-invalid-return-with-returns-att";
 import { IBM1219I_leave_exits_noniterative_do } from "./messages/IBM1219I-leave-exits-noniterative-do";
 import { IBM1324IE_name_occurs_more_than_once_within_exports_clause } from "./messages/IBM1324IE-name-occurs-more-than-once-within-exports-clause.js";
 import { IBM1388IE_NODESCRIPTOR_attribute_is_invalid_when_any_parameter_has_NONCONNECTED_attribute } from "./messages/IBM1388IE-NODESCRIPTOR-attribute-is-invalid-when-any-parameter-has-NONCONNECTED-attribute.js";
@@ -48,6 +49,7 @@ export function registerPliValidationChecks(unit: CompilationUnit): Validator {
     // MemberCall: [IBM1747IS_Function_cannot_be_used_before_the_functions_descriptor_list_has_been_scanned],
     ProcedureStatement: [
       IBM1388IE_NODESCRIPTOR_attribute_is_invalid_when_any_parameter_has_NONCONNECTED_attribute,
+      IBM2409I_invalid_return_with_returns_att,
     ],
     LabelReference: [validator.checkLabelReference],
     CallStatement: [validator.checkCallStatement],

@@ -5515,6 +5515,7 @@ export class PliParser extends AbstractParser {
       kind: ast.SyntaxKind.ReturnStatement,
       container: null,
       expression: null,
+      returnToken: null,
     };
   }
 
@@ -5523,6 +5524,7 @@ export class PliParser extends AbstractParser {
 
     this.CONSUME_ASSIGN1(tokens.RETURN, (token) => {
       this.tokenPayload(token, element, CstNodeKind.ReturnStatement_RETURN);
+      element.returnToken = token;
     });
     this.OPTION1(() => {
       this.CONSUME_ASSIGN1(tokens.OpenParen, (token) => {
