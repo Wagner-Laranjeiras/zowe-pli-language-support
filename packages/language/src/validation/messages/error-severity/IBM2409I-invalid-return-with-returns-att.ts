@@ -16,83 +16,45 @@ import {
   tokenToRange,
   tokenToUri,
 } from "../../../language-server/types";
-import { PLICodes } from "..";
-import { forEachNode } from "../../../syntax-tree/ast-iterator";
+import * as PLICodes from "./../pli-codes";
+import { collectNodesOfKind } from "../../../syntax-tree/ast-iterator";
 
-// function collectReturnStatements(
-//   stmts: AST.Statement[] | undefined,
-//   visited = new Set<object>(),
-// ): AST.ReturnStatement[] {
-//   if (!stmts) return [];
-
-//   const found: AST.ReturnStatement[] = [];
-
-//   for (const stmt of stmts) {
-//     if (!stmt.value) continue;
-
-//     // Avoid infinite recursion (cyclical references)
-//     if (visited.has(stmt.value)) continue;
-//     visited.add(stmt.value);
-
-//     // If this is directly a RETURN
-//     if (stmt.value.kind === AST.SyntaxKind.ReturnStatement) {
-//       found.push(stmt.value as AST.ReturnStatement);
-//     }
-
-//     // Traverse *all* properties of this node dynamically
-//     for (const key of Object.keys(stmt.value)) {
-//       const prop = (stmt.value as any)[key];
-//       if (!prop) continue;
-
-//       // Case 1: a single nested Statement
-//       if (prop._debugKind === "Statement") {
-//         found.push(...collectReturnStatements([prop], visited));
-//       }
-
-//       // Case 2: an array of nested Statements
-//       if (
-//         Array.isArray(prop) &&
-//         prop.every((p) => p?._debugKind === "Statement")
-//       ) {
-//         found.push(...collectReturnStatements(prop, visited));
-//       }
-//     }
-//   }
-
-//   return found;
-// }
-
+/**
+ * IBM2409I: RETURN statement without an expression is invalid inside a nested PROCEDURE that 
+ * specified the RETURNS attribute. All RETURN statements inside functions must specify a value 
+ * to be returned.
+ * 
+ * @param node 
+ * @param acceptor 
+ * @returns
+ */
 export function IBM2409I_invalid_return_with_returns_att(
   node: AST.ProcedureStatement,
   acceptor: ValidationAcceptor,
-) {
-  console.log('HALLO?');
+): void {
   const hasReturnsAtt = node.options?.some(
     (att) => att.kind === AST.SyntaxKind.ReturnsOption,
   );
   if (!hasReturnsAtt) return;
-  console.log('HAS RETURNS ATT');
 
-  forEachNode(node, (n) => {
-    console.log('FOR EACH NODES: ', n);
-    if (n.kind !== AST.SyntaxKind.ReturnStatement) return;
-    console.log('KIND IS RETURN!')
-    if (n.expression) return;
-    console.log('AND IT HAS EXP: ', n.expression);
-    
-    const token = n.returnToken
+  const returnStmts = collectNodesOfKind(node, AST.SyntaxKind.ReturnStatement);
+  if (returnStmts.length === 0) return;
+
+  returnStmts.forEach((ret) => {
+    if (ret.kind !== AST.SyntaxKind.ReturnStatement) return;
+    if (ret.expression) return;
+
+    const token = ret.returnToken;
     if (!token) return;
-    console.log('HAS TOKEN!');
-  
+
     const errorRange = tokenToRange(token);
     const errorUri = tokenToUri(token);
     if (!errorRange || !errorUri) return;
-  
+
     acceptor(Severity.E, PLICodes.Error.IBM2409I.message, {
       code: PLICodes.Error.IBM2409I.fullCode,
       range: errorRange,
       uri: errorUri,
     });
-  })
-
+  });
 }
