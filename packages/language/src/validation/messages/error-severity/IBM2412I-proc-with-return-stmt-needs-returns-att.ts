@@ -17,7 +17,7 @@ import {
   tokenToUri,
 } from "../../../language-server/types";
 import * as PLICodes from "./../pli-codes";
-import { findFirstNodeOfKind } from "../../../syntax-tree/ast-iterator";
+import { collectNodesOfKind, findFirstNodeOfKind } from "../../../syntax-tree/ast-iterator";
 
 /**
  * IBM2412I: If a procedure contains a RETURN statement, it should have the RETURNS attribute
@@ -48,6 +48,35 @@ export function IBM2412I_proc_with_return_stmt_needs_returns_att(
 
   acceptor(Severity.E, PLICodes.Error.IBM2412I.message, {
     code: PLICodes.Error.IBM2412I.fullCode,
+    range: errorRange,
+    uri: errorUri,
+  });
+}
+
+export function IBM2410I_functios_must_contain_at_least_one_return_stmt(
+  node: AST.ProcedureStatement,
+  acceptor: ValidationAcceptor,
+) {
+
+  const returnStmts = collectNodesOfKind(node, AST.SyntaxKind.ReturnStatement);
+  if (returnStmts.length > 0) return;
+
+  const token = node.procToken;
+  if (!token) return;
+  console.log('TOKEN IS HERE');
+  const procName = token.image;
+  
+  if (!procName) return;
+  console.log('PROC NAME: ', procName);
+    console.log('token.immediateFollow: ', node);
+
+
+  const errorRange = tokenToRange(token);
+  const errorUri = tokenToUri(token);
+  if (!errorRange || !errorUri) return;
+
+  acceptor(Severity.E, PLICodes.Error.IBM2410I.message(procName), {
+    code: PLICodes.Error.IBM2410I.fullCode,
     range: errorRange,
     uri: errorUri,
   });
