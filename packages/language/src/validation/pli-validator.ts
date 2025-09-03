@@ -30,7 +30,7 @@ import { IBM1388IE_NODESCRIPTOR_attribute_is_invalid_when_any_parameter_has_NONC
 import { IBM2615I_do_loops_execute_once } from "./messages/warning-severity/IBM2615I-do-loops-execute-once";
 import * as PLICodes from "./messages/pli-codes";
 import { ValidationAcceptor, ValidationChecks, Validator } from "./validator";
-import { IBM2412I_proc_with_return_stmt_needs_returns_att } from "./messages/error-severity/IBM2409I-IBM2410I-IBM2412I-proc-needs-returns-att-and-valid-return-stmt.ts";
+import { IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_return_stmt } from "./messages/error-severity/IBM2409I-IBM2410I-IBM2412I-proc-needs-returns-att-and-valid-return-stmt.ts";
 
 /**
  * A function that accepts a diagnostic for PL/I validation
@@ -50,7 +50,7 @@ export function registerPliValidationChecks(unit: CompilationUnit): Validator {
     // MemberCall: [IBM1747IS_Function_cannot_be_used_before_the_functions_descriptor_list_has_been_scanned],
     ProcedureStatement: [
       IBM1388IE_NODESCRIPTOR_attribute_is_invalid_when_any_parameter_has_NONCONNECTED_attribute,
-      IBM2412I_proc_with_return_stmt_needs_returns_att,
+      IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_return_stmt,
     ],
     LabelReference: [validator.checkLabelReference],
     CallStatement: [validator.checkCallStatement],

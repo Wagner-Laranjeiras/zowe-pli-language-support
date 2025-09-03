@@ -35,7 +35,7 @@ import {
  * @param acceptor The mechanism used to collect validation issues.
  * @returns Validation results or diagnostics, as appropriate.
  */
-export function IBM2409I_IBM2410I_IBM2412I(
+export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_return_stmt(
   node: AST.ProcedureStatement,
   acceptor: ValidationAcceptor,
 ): void {
