@@ -30,7 +30,7 @@ import { IBM1388IE_NODESCRIPTOR_attribute_is_invalid_when_any_parameter_has_NONC
 import { IBM2615I_do_loops_execute_once } from "./messages/warning-severity/IBM2615I-do-loops-execute-once";
 import * as PLICodes from "./messages/pli-codes";
 import { ValidationAcceptor, ValidationChecks, Validator } from "./validator";
-import { IBM2412I_proc_with_return_stmt_needs_returns_att } from "./messages/error-severity/IBM2412I-proc-with-return-stmt-needs-returns-att";
+import { IBM2412I_proc_with_return_stmt_needs_returns_att } from "./messages/error-severity/IBM2409I-IBM2410I-IBM2412I-proc-needs-returns-att-and-valid-return-stmt.ts";
 
 /**
  * A function that accepts a diagnostic for PL/I validation

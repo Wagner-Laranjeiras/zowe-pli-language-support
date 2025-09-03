@@ -2084,12 +2084,14 @@ export function createReturnsOption(): ReturnsOption {
 export interface ReturnStatement extends AstNode {
   kind: SyntaxKind.ReturnStatement;
   expression: Expression | null;
+  returnToken: Token | null;
 }
 export function createReturnStatement(): ReturnStatement {
   return {
     kind: SyntaxKind.ReturnStatement,
     container: null,
     expression: null,
+    returnToken: null,
   };
 }
 export interface RevertStatement extends AstNode {
