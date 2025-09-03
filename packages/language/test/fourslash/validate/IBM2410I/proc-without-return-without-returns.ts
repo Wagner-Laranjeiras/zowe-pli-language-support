@@ -12,11 +12,11 @@
 /// <reference path="../../framework.ts" />
 
 /**
- * Procedure with no RETURN statement must trigger IBM2410I
+ * Procedure with no RETURN statement must NOT trigger IBM2410I
  */
 
 // @wrap: main
 //// c: <|1:proc|>;
 //// end;
 
-verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2410I.fullCode);
+verify.noDiagnostics(1);

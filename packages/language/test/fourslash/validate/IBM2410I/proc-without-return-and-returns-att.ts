@@ -17,4 +17,4 @@
 ////   Y = 2;
 //// END;
 
-verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2410I.fullCode);
+verify.noDiagnostics(1);

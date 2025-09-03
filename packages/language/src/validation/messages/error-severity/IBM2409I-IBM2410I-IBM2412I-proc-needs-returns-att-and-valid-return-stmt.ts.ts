@@ -71,7 +71,7 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
   if (!errorRange || !errorUri) return;
 
   //IBM2410I: Functions must contain at least one RETURN statement.
-  if (returnStmts.length === 0) {
+  if (hasReturnsAtt && returnStmts.length === 0) {
     acceptor(Severity.E, PLICodes.Error.IBM2410I.message(token.image), {
       code: PLICodes.Error.IBM2410I.fullCode,
       range: errorRange,
