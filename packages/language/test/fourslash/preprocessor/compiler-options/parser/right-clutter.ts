@@ -25,9 +25,9 @@
 
 // @filename: main.pli
 // @wrap: process
-////*PROCESS MARGINS(1, 72); xxx
+////*PROCESS <|1:MARGINS(1, 72)|>; xxx
 
-verify.noDiagnostics();
+verify.noDiagnostics(1);
 verify.expectCompilerOptions({
   margins: {
     m: 1,

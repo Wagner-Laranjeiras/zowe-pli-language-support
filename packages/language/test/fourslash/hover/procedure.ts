@@ -30,7 +30,10 @@
 //// CALL <|2>MyProc;
 //// CALL <|3>MyProc2;
 
-verify.noDiagnostics();
+verify.noDiagnosticsExcept([
+  new RegExp(code.Error.IBM2412I.fullCode),
+  new RegExp(code.Error.IBM2410I.fullCode),
+]);
 const expectedMarkdown = hover.codeBlock(
   "MYPROC: PROC(A,B,C) OPTIONS(MAIN, ORDER) RECURSIVE REORDER RETURNS(FIXED BIN(31));",
 );

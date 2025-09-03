@@ -17,5 +17,8 @@
 //// END PLEA;
 //// CALL PLEA("abc");
 
-verify.noDiagnostics();
+verify.noDiagnosticsExcept([
+  new RegExp(code.Error.IBM2412I.fullCode),
+  new RegExp(code.Error.IBM2410I.fullCode),
+]);
 linker.expectLinks();

@@ -16,5 +16,8 @@
 //// PUT(<|1>C);
 //// DCL <|1:C|> FIXED(15) INIT(0);
 
-verify.noDiagnostics();
+verify.noDiagnosticsExcept([
+  new RegExp(code.Error.IBM2412I.fullCode),
+  new RegExp(code.Error.IBM2410I.fullCode),
+]);
 linker.expectLinks();

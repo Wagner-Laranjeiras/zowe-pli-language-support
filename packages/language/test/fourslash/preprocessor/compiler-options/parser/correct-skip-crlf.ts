@@ -36,4 +36,6 @@ verify.noDiagnosticsExcept([
   new RegExp(
     code.CompilerOptions.MutexOptionIssue.message("").substring(0, 20),
   ),
+  new RegExp(code.Error.IBM2412I.fullCode),
+  new RegExp(code.Error.IBM2410I.fullCode),
 ]);

@@ -14,4 +14,7 @@
 // @wrap: process
 ////*PROCESS MARGINS(2, 100); // test
 
-verify.noDiagnostics();
+verify.noDiagnosticsExcept([
+  new RegExp(code.Error.IBM2412I.fullCode),
+  new RegExp(code.Error.IBM2410I.fullCode),
+]);

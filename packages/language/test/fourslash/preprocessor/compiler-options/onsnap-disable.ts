@@ -12,9 +12,9 @@
 /// <reference path="../../framework.ts" />
 
 // @wrap: process
-////*PROCESS ONSNAP();
+////*PROCESS <|1:ONSNAP()|>;
 
-verify.noDiagnostics();
+verify.noDiagnostics(1);
 verify.expectCompilerOptions({
   onSnap: false,
 });

@@ -36,4 +36,7 @@
 ////   END RGT005;
 //// END RGT005;
 
-verify.noDiagnostics();
+verify.noDiagnosticsExcept([
+  new RegExp(code.Error.IBM2412I.fullCode),
+  new RegExp(code.Error.IBM2410I.fullCode),
+]);

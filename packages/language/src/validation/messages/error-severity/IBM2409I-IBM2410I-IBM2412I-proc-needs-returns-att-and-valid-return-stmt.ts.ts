@@ -17,9 +17,7 @@ import {
   tokenToUri,
 } from "../../../language-server/types";
 import * as PLICodes from "../pli-codes";
-import {
-  collectNodesOfKind,
-} from "../../../syntax-tree/ast-iterator";
+import { collectNodesOfKind } from "../../../syntax-tree/ast-iterator";
 
 /**
  * IBM2412I: If a procedure contains a RETURN statement, it should have the RETURNS attribute
