@@ -64,9 +64,9 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
 
   traverseAllNodes(node, (n) => {
     // Catch no RETURN
-    if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Skip;
+    // if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Skip;
     // Catch all RETURNs
-    // if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Continue;
+    if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Continue;
 
     if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n as AST.ReturnStatement);
 
@@ -102,7 +102,6 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
         range: errorRange,
         uri: errorUri,
       });
-      console.log("CARALHO");
     });
   }
 
@@ -151,9 +150,6 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
   //     if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n);
   //   });
 
-  // });
-
-  // forEachNode(node, (child) => {
   // });
 
 // if (hasReturnsAtt && returnStmts.length > 0) {
