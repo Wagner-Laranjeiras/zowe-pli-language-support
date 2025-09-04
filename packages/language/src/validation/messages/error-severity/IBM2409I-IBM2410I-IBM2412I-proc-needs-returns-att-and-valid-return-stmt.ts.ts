@@ -17,7 +17,10 @@ import {
   tokenToUri,
 } from "../../../language-server/types";
 import * as PLICodes from "../pli-codes";
-import { collectNodesOfKind } from "../../../syntax-tree/ast-iterator";
+import {
+  TraversalState,
+  traverseAllNodes,
+} from "../../../syntax-tree/ast-iterator";
 
 /**
  * IBM2412I: If a procedure contains a RETURN statement, it should have the RETURNS attribute
@@ -37,17 +40,56 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
   node: AST.ProcedureStatement,
   acceptor: ValidationAcceptor,
 ): void {
-  const returnStmts = collectNodesOfKind(node, AST.SyntaxKind.ReturnStatement);
+  const returnStmts: AST.ReturnStatement[] = [];
+
+  /**
+   * PROBLEM: test bellow is pushing the RETURN inside the nested proc to the `returnStmts`variable.
+   * This can cause some false negatives for the 2412I. But I'm currently either capable of catching
+   * all 3 returns or no return at all.
+   * 
+   * at file: /IBM2412I/proc-with-return-inside-if-without-returns.ts
+   */
+
+  // @wrap: main
+  //// b: <|1:proc|>;
+  ////    if 6 > 5 then
+  ////        return (1);
+  ////    else
+  ////        return (0);
+  ////    proc returns( OPTIONAL byvalue fixed bin(31) );
+  ////        return (0);
+  ////    end;
+  //// end b;
+
+
+  traverseAllNodes(node, (n) => {
+    // Catch no RETURN
+    if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Skip;
+    // Catch all RETURNs
+    // if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Continue;
+
+    if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n as AST.ReturnStatement);
+
+    return TraversalState.Continue;
+  });
+
   const hasReturnsAtt = node.options?.some(
     (att) => att.kind === AST.SyntaxKind.ReturnsOption,
   );
 
-  // IBM2409I: All RETURN statements inside functions that specified the RETURNS attribute must specify a value to be returned.
-  if (hasReturnsAtt && returnStmts.length > 0) {
-    returnStmts.forEach((ret) => {
-      if (ret.kind !== AST.SyntaxKind.ReturnStatement) return;
-      if (ret.expression) return;
+  if (returnStmts.length === 0 && !hasReturnsAtt) return;
 
+  const returnSomething: AST.ReturnStatement[] = [];
+  const returnNothing: AST.ReturnStatement[] = [];
+
+  returnStmts?.forEach((ret: any) => {
+    if (ret.expression) returnSomething.push(ret);
+    if (!ret.expression) returnNothing.push(ret);
+  });
+
+  // IBM2409I: All RETURN statements inside functions that specified the RETURNS attribute must specify a value to be returned.
+  if (hasReturnsAtt && returnNothing.length > 0) {
+    returnNothing.forEach((ret) => {
       const returnToken = ret.returnToken;
       if (!returnToken) return;
 
@@ -60,27 +102,27 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
         range: errorRange,
         uri: errorUri,
       });
+      console.log("CARALHO");
     });
-    return;
   }
 
-  const token = node.procToken;
-  if (!token) return;
-  const errorRange = tokenToRange(token);
-  const errorUri = tokenToUri(token);
+  const procToken = node.procToken;
+  if (!procToken) return;
+  const errorRange = tokenToRange(procToken);
+  const errorUri = tokenToUri(procToken);
   if (!errorRange || !errorUri) return;
 
-  //IBM2410I: Functions must contain at least one RETURN statement.
+  //IBM2410I: Procedures with RETURNS attribute must contain at least one RETURN statement.
   if (hasReturnsAtt && returnStmts.length === 0) {
-    acceptor(Severity.E, PLICodes.Error.IBM2410I.message(token.image), {
+    acceptor(Severity.E, PLICodes.Error.IBM2410I.message(procToken.image), {
       code: PLICodes.Error.IBM2410I.fullCode,
       range: errorRange,
       uri: errorUri,
     });
   }
 
-  // IBM2412I: If a procedure contains a RETURN statement, it should have the RETURNS attribute.
-  if (returnStmts.length > 0 && !hasReturnsAtt) {
+  // IBM2412I: If a procedure contains a RETURN (...) statement, it should have the RETURNS attribute.
+  if (returnSomething.length > 0 && !hasReturnsAtt) {
     acceptor(Severity.E, PLICodes.Error.IBM2412I.message, {
       code: PLICodes.Error.IBM2412I.fullCode,
       range: errorRange,
@@ -88,3 +130,49 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
     });
   }
 }
+
+// RETURN (...); is required if you have RETURNS (edited)
+// But a RETURN; is valid if you have no RETURNS attribute
+
+
+//// OLD TRIES:
+  // let firstIteration: boolean = false;
+  // traverseAllNodes(node, (n): TraversalState | void => {
+  //   if (n.kind === AST.SyntaxKind.ProcedureStatement) {
+  //     if (firstIteration) return;
+  //     firstIteration = true;
+  //   }
+  //   if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n);
+  // });
+
+  // forEachNode(node, (child) => {
+  //   traverseAllNodes(child, (n): TraversalState | void => {
+  //     if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Continue;
+  //     if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n);
+  //   });
+
+  // });
+
+  // forEachNode(node, (child) => {
+  // });
+
+// if (hasReturnsAtt && returnStmts.length > 0) {
+//   returnStmts.forEach((ret) => {
+//     if (ret.kind !== AST.SyntaxKind.ReturnStatement) return;
+//     if (ret.expression) return;
+
+//     const returnToken = ret.returnToken;
+//     if (!returnToken) return;
+
+//     const errorRange = tokenToRange(returnToken);
+//     const errorUri = tokenToUri(returnToken);
+//     if (!errorRange || !errorUri) return;
+
+//     acceptor(Severity.E, PLICodes.Error.IBM2409I.message, {
+//       code: PLICodes.Error.IBM2409I.fullCode,
+//       range: errorRange,
+//       uri: errorUri,
+//     });
+//   });
+//   return;
+// }

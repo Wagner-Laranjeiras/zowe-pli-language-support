@@ -11,16 +11,9 @@
 
 /// <reference path="../../framework.ts" />
 
-
 // @wrap: main
-//// b: <|1:proc|>;
-////    if 6 > 5 then
-////        return (1);
-////    else
-////        return (0);
-////    proc returns( OPTIONAL byvalue fixed bin(31) );
-////        return (0);
-////    end;
-//// end b;
+//// <|1:proc|> returns( OPTIONAL byvalue fixed bin(31) );
+////    return;
+//// end;
 
-verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2412I.fullCode);
+verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2409I.fullCode);

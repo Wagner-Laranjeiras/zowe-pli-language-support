@@ -11,16 +11,17 @@
 
 /// <reference path="../../framework.ts" />
 
+/**
+ * Procedure with no RETURN statement must NOT trigger IBM2410I
+ */
 
 // @wrap: main
-//// b: <|1:proc|>;
-////    if 6 > 5 then
-////        return (1);
-////    else
-////        return (0);
-////    proc returns( OPTIONAL byvalue fixed bin(31) );
-////        return (0);
-////    end;
-//// end b;
+//// MAINPR: <|1:proc|> options( main );
+////    d: <|2:proc|> returns( OPTIONAL byvalue fixed bin(31) );
+////        return;
+////    end d;
+////    call d();
+//// end MAINPR;
 
-verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2412I.fullCode);
+verify.noDiagnostics(1);
+verify.expectExclusiveErrorCodesAt(2, code.Error.IBM2409I.fullCode);

@@ -14,6 +14,7 @@ import { SyntaxKind, SyntaxNode } from "./ast";
 export enum TraversalState {
   Continue,
   Stop,
+  Skip,
 }
 
 /**
@@ -957,14 +958,19 @@ export function forEachNode(
 export function traverseAllNodes(
   node: SyntaxNode,
   traverse: (n: SyntaxNode) => TraversalState | undefined | void,
-) {
+): TraversalState {
   const state = traverse(node);
 
-  if (state !== TraversalState.Stop) {
-    forEachNode(node, (child) => {
-      traverseAllNodes(child as SyntaxNode, traverse);
+  if (state === TraversalState.Stop) return TraversalState.Stop;
+
+  if (state !== TraversalState.Skip) {
+    forEachNode(node, (child): TraversalState | void => {
+      const childState = traverseAllNodes(child as SyntaxNode, traverse);
+      if (childState === TraversalState.Stop) return TraversalState.Stop;
     });
   }
+
+  return TraversalState.Continue;
 }
 
 /**
