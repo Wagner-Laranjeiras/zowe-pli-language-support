@@ -44,10 +44,10 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
 
   /**
    * PROBLEM: test bellow is pushing the RETURN inside the nested proc to the `returnStmts`variable.
-   * This can cause some false negatives for the 2412I. But I'm currently either capable of catching
+   * This can cause some false negatives. But I'm currently either capable of catching
    * all 3 returns or no return at all.
    * 
-   * at file: /IBM2412I/proc-with-return-inside-if-without-returns.ts
+   * at file: test/fourslash/validate/IBM2412I/proc-with-return-inside-if-without-returns.ts
    */
 
   // @wrap: main
