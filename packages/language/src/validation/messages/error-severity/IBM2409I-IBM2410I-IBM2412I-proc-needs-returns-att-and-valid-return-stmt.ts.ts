@@ -43,40 +43,18 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
 ): void {
   const returnStmts: AST.ReturnStatement[] = [];
 
-  /**
-   * PROBLEM: test bellow is pushing the RETURN inside the nested proc to the `returnStmts`variable.
-   * This can cause some false negatives. But I'm currently either capable of catching
-   * all 3 returns or no return at all.
-   *
-   * at file: test/fourslash/validate/IBM2412I/proc-with-return-inside-if-without-returns.ts
-   */
-
   const traverseChildren = (node: AST.SyntaxNode) => {
     traverseAllNodes(node, (n) => {
-      if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Skip;
-      if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n as AST.ReturnStatement);
+      if (n.kind === AST.SyntaxKind.ProcedureStatement)
+        return TraversalState.Skip;
+      if (n.kind === AST.SyntaxKind.ReturnStatement)
+        returnStmts.push(n as AST.ReturnStatement);
       return TraversalState.Continue;
     });
-  }
-
-  forEachNode(node, (child) => { traverseChildren(child) });
-
-  // traverseAllNodes(node, (n) => {
-  //   // Catch no RETURN
-  //   //if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Skip;
-  //   // Catch all RETURNs
-  //   //if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Continue;
-
-  //   if (node.container !== n && node !== n && n.kind === AST.SyntaxKind.ProcedureStatement) {
-  //     console.log('N KIND PROCEDURE: ', n)
-  //     return TraversalState.Skip;
-  //   }
-
-  //   if (n.kind === AST.SyntaxKind.ReturnStatement)
-  //     returnStmts.push(n as AST.ReturnStatement);
-
-  //   return TraversalState.Continue;
-  // });
+  };
+  forEachNode(node, (child) => {
+    traverseChildren(child);
+  });
 
   const hasReturnsAtt = node.options?.some(
     (att) => att.kind === AST.SyntaxKind.ReturnsOption,
@@ -92,7 +70,8 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
     if (!ret.expression) returnNothing.push(ret);
   });
 
-  if (hasReturnsAtt && returnSomething.length > 0 && returnNothing.length === 0) return;
+  if (hasReturnsAtt && returnSomething.length > 0 && returnNothing.length === 0)
+    return;
 
   // IBM2409I: All RETURN statements inside functions that specified the RETURNS attribute must specify a value to be returned.
   if (hasReturnsAtt && returnNothing.length > 0) {
@@ -102,7 +81,6 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
 
       const errorRange = tokenToRange(returnToken);
       const errorUri = tokenToUri(returnToken);
-      console.log('RANGE AND URI: ', errorRange, errorUri);
       if (!errorRange || !errorUri) return;
 
       acceptor(Severity.E, PLICodes.Error.IBM2409I.message, {
@@ -139,45 +117,3 @@ export function IBM2409I_IBM2410I_IBM2412I_proc_needs_returns_att_and_valid_retu
     });
   }
 }
-
-// RETURN (...); is required if you have RETURNS (edited)
-// But a RETURN; is valid if you have no RETURNS attribute
-
-//// OLD TRIES:
-// let firstIteration: boolean = false;
-// traverseAllNodes(node, (n): TraversalState | void => {
-//   if (n.kind === AST.SyntaxKind.ProcedureStatement) {
-//     if (firstIteration) return;
-//     firstIteration = true;
-//   }
-//   if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n);
-// });
-
-// forEachNode(node, (child) => {
-//   traverseAllNodes(child, (n): TraversalState | void => {
-//     if (n.kind === AST.SyntaxKind.ProcedureStatement) return TraversalState.Continue;
-//     if (n.kind === AST.SyntaxKind.ReturnStatement) returnStmts.push(n);
-//   });
-
-// });
-
-// if (hasReturnsAtt && returnStmts.length > 0) {
-//   returnStmts.forEach((ret) => {
-//     if (ret.kind !== AST.SyntaxKind.ReturnStatement) return;
-//     if (ret.expression) return;
-
-//     const returnToken = ret.returnToken;
-//     if (!returnToken) return;
-
-//     const errorRange = tokenToRange(returnToken);
-//     const errorUri = tokenToUri(returnToken);
-//     if (!errorRange || !errorUri) return;
-
-//     acceptor(Severity.E, PLICodes.Error.IBM2409I.message, {
-//       code: PLICodes.Error.IBM2409I.fullCode,
-//       range: errorRange,
-//       uri: errorUri,
-//     });
-//   });
-//   return;
-// }

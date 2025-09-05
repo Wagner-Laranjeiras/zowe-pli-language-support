@@ -964,7 +964,7 @@ export function traverseAllNodes(
   if (state === TraversalState.Stop) return TraversalState.Stop;
   if (state === TraversalState.Skip) return TraversalState.Continue;
 
-  if(state === TraversalState.Continue) {
+  if (state === TraversalState.Continue) {
     forEachNode(node, (child): TraversalState | void => {
       const childState = traverseAllNodes(child as SyntaxNode, traverse);
       if (childState === TraversalState.Stop) return TraversalState.Stop;
