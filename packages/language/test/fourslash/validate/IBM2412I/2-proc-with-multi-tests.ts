@@ -11,10 +11,6 @@
 
 /// <reference path="../../framework.ts" />
 
-/**
- * Procedure with no RETURN statement must NOT trigger IBM2410I
- */
-
 // @wrap: main
 //// MAINPR: <|1:proc|> options( main );
 ////    b: <|2:proc|> returns( OPTIONAL byvalue fixed bin(31) );
@@ -34,8 +30,8 @@
 ////    call e();
 //// end MAINPR;
 
-verify.noDiagnostics(1);
-verify.noDiagnostics(2);
-verify.expectExclusiveErrorCodesAt(3, code.Error.IBM2412I.fullCode);
-verify.expectExclusiveErrorCodesAt(4, code.Error.IBM2409I.fullCode);
-verify.expectExclusiveErrorCodesAt(5, code.Error.IBM2410I.fullCode);
+verify.noDiagnostics(1); // No RETURN, no RETURNS -> ok
+verify.noDiagnostics(2); // Has RETURN, has RETURNS -> ok
+verify.expectExclusiveErrorCodesAt(3, code.Error.IBM2412I.fullCode); // Has RETURN (...), has no RETURNS -> Need att
+verify.expectExclusiveErrorCodesAt(4, code.Error.IBM2409I.fullCode); // Has RETURN, has RETURNS -> RETURN must return something
+verify.expectExclusiveErrorCodesAt(5, code.Error.IBM2410I.fullCode); // Has no RETURN, has RETURNS -> must have RETURN (...)

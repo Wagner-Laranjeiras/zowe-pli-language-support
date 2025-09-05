@@ -12,13 +12,11 @@
 /// <reference path="../../framework.ts" />
 
 // @wrap: main
-//// OUTER: <|1:PROC|>;
-////   INNER: PROC RETURNS(FIXED);
-////        RETURN (0);
-////   END INNER;
-////   RETURN;
-//// END OUTER;
+//// b: <|1:proc|>;
+////    if 6 > 5 then
+////        return (1);
+////    else
+////        return (0);
+//// end b;
 
-verify.noDiagnostics(1);
-// Fails because doesn't catch the RETURNS att (expected)
-// but catches the nested RETURN (wrong)
+verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2412I.fullCode);

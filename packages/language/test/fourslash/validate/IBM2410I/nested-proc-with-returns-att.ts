@@ -11,16 +11,13 @@
 
 /// <reference path="../../framework.ts" />
 
-
 // @wrap: main
-//// b: <|1:proc|>;
-////    if 6 > 5 then
-////        return (1);
-////    else
-////        return (0);
-////    proc returns( OPTIONAL byvalue fixed bin(31) );
-////        return (0);
-////    end;
-//// end b;
+//// OUTER: <|1:PROC|> RETURNS(FIXED);
+////   INNER: PROC;
+////        RETURN (0);
+////   END INNER;
+//// END OUTER;
 
-verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2412I.fullCode);
+verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2410I.fullCode);
+// Fails because catches the RETURNS att (expected)
+// but also catches the nested RETURN (wrong)

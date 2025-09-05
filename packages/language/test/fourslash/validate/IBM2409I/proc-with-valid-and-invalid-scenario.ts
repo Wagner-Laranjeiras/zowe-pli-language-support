@@ -11,11 +11,18 @@
 
 /// <reference path="../../framework.ts" />
 
+/**
+ * Procedure with no RETURN statement must NOT trigger IBM2410I
+ */
+
 // @wrap: main
-//// OUTER: <|1:PROC|> RETURNS(FIXED);
-////   INNER: PROC;
-////        RETURN (0);
-////   END INNER;
-//// END OUTER;
+//// MAINPR: <|1:proc|> options( main );
+////    d: proc returns( OPTIONAL byvalue fixed bin(31) );
+////        return;
+////    end d;
+////    call d();
+//// end MAINPR;
 
 verify.noDiagnostics(1);
+// passing for the wrong reasons -> the returns and
+// return are being catch
