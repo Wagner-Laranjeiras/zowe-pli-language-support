@@ -12,8 +12,8 @@
 /// <reference path="../../framework.ts" />
 
 // @wrap: main
-//// <|1:proc|> returns( OPTIONAL byvalue fixed bin(31) );
-////    return;
+//// proc returns( OPTIONAL byvalue fixed bin(31) );
+////    <|1:return|>;
 //// end;
 
 verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2409I.fullCode);

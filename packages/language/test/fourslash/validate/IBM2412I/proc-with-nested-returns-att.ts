@@ -20,5 +20,3 @@
 //// END OUTER;
 
 verify.noDiagnostics(1);
-// Fails because doesn't catch the RETURNS att (expected)
-// but catches the nested RETURN (wrong)

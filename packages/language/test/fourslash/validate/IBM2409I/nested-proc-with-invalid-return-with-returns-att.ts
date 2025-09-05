@@ -17,17 +17,10 @@
 
 // @wrap: main
 //// MAINPR: proc options( main );
-////    d: <|1:proc|> returns( OPTIONAL byvalue fixed bin(31) );
-////        return;
+////    d: proc returns( OPTIONAL byvalue fixed bin(31) );
+////        <|1:return|>;
 ////    end d;
 ////    call d();
 //// end MAINPR;
 
 verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2409I.fullCode);
-
-// Why??
-
-// SOLVED:
-// Failing because the RETURNS att is not being catched (expected)
-// and the RETURN att is being catched (wrong)
-// Test is running from the MAINPR perspective, not the nested PROC

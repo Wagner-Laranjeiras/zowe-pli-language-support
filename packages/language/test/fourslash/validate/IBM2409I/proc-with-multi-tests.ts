@@ -21,8 +21,8 @@
 ////        return(32);
 ////    end c;
 ////    call c();
-////    d: <|4:proc|> returns( OPTIONAL byvalue fixed bin(31) );
-////        return;
+////    d: proc returns( OPTIONAL byvalue fixed bin(31) );
+////        <|4:return|>;
 ////    end d;
 ////    call d();
 ////    e: <|5:proc|> returns( OPTIONAL byvalue fixed bin(31) );

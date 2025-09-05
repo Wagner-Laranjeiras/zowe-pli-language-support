@@ -19,5 +19,3 @@
 //// END OUTER;
 
 verify.expectExclusiveErrorCodesAt(1, code.Error.IBM2410I.fullCode);
-// Fails because catches the RETURNS att (expected)
-// but also catches the nested RETURN (wrong)

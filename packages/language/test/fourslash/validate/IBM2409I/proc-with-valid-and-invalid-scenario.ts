@@ -24,5 +24,3 @@
 //// end MAINPR;
 
 verify.noDiagnostics(1);
-// passing for the wrong reasons -> the returns and
-// return are being catch
