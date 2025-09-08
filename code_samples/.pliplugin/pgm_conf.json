@@ -1,0 +1,8 @@
+{
+  "pgms": [
+    {
+      "program": "DB2VRM.pli",
+      "pgroup": "default"
+    }
+  ]
+}
