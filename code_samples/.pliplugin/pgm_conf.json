@@ -1,7 +1,7 @@
 {
   "pgms": [
     {
-      "program": "DB2VRM.pli",
+      "program": "preprocessor/included.pli",
       "pgroup": "default"
     }
   ]

@@ -30,6 +30,12 @@
     "code4z"
   ],
   "contributes": {
+    "commands": [
+      {
+        "command": "pli.configureInclude",
+        "title": "Configure Include"
+      }
+    ],
     "languages": [
       {
         "id": "pli",
