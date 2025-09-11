@@ -2,23 +2,22 @@
   "pgroups": [
     {
       "name": "default",
-      "compiler-options": [
-        "AGGREGATE",
-        "MARGINS(2,72)"
-      ],
-      "pli-options": {
-        "SYSPARM": "'from process group'",
-        "SYSTEM": "MVS",
-        "MARGINS": "2,72"
-      },
+      "compiler-options": [],
       "libs": [
-        "cpy"
+        "cpy",
+        "inc"
       ],
       "include-extensions": [
         ".pli",
-        ".cpy",
+        ".pl1",
         ".inc"
-      ]
+      ],
+      "implicit-builtins": [
+        "SUBSTR"
+      ],
+      "lsp-options": {
+        "check-margins": true
+      }
     }
   ]
 }

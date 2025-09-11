@@ -1,1 +1,5 @@
+ %INCLUDE "c.pli";
+ %INCLUDE "not-here.pli";
+ %INCLUDE "does-not-exist.pli";
+ 
  DECLARE VARB FIXED;
