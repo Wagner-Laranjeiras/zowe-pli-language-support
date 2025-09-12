@@ -1,4 +1,5 @@
 import type {
+  Diagnostic,
   LanguageClientOptions,
   ServerOptions,
 } from "vscode-languageclient/node.js";
@@ -36,8 +37,7 @@ export function activate(context: vscode.ExtensionContext): void {
   client = startLanguageClient(context);
   context.subscriptions.push(registerOnDidOpenTextDocListener(context));
 
-  // Register Quick Fix for INCLUDE Directive
-  // Is the diagnostic the IBM3841I?
+  // Register configureInclude
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "pli.configureInclude",
@@ -136,12 +136,12 @@ export function activate(context: vscode.ExtensionContext): void {
   // Register CodeActionProvider for PL/I
   context.subscriptions.push(
     vscode.languages.registerCodeActionsProvider("pli", {
-      provideCodeActions(document, range, ctx, token) {
+      provideCodeActions(document, range, context, token) {
         const actions: vscode.CodeAction[] = [];
+        const DIAG_CODE_FOR_UNRESOLVED_INCLUDE: string = "IBM3841IS";
 
-        for (const diagnostic of ctx.diagnostics) {
-          // Match your unresolved INCLUDE diagnostic code
-          if (diagnostic.code === "IBM3841I") {
+        for (const diagnostic of context.diagnostics) {
+          if (diagnostic.code === DIAG_CODE_FOR_UNRESOLVED_INCLUDE) {
             const action = new vscode.CodeAction(
               "Configure INCLUDE",
               vscode.CodeActionKind.QuickFix,
@@ -156,7 +156,7 @@ export function activate(context: vscode.ExtensionContext): void {
               command: "pli.configureInclude",
               arguments: [
                 document,
-                (diagnostic as any).data?.missingFile, // pass missing file if attached server-side
+                (diagnostic as Diagnostic).data?.missingFile, // pass missing file if attached server-side
               ],
             };
 

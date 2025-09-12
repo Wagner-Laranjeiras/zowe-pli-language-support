@@ -5,7 +5,10 @@
       "compiler-options": [],
       "libs": [
         "cpy",
-        "inc"
+        "inc",
+        "test-include",
+        "cpy/test-nested-included",
+        "test-manual"
       ],
       "include-extensions": [
         ".pli",
